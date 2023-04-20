@@ -31,3 +31,57 @@ POST http://localhost:9081/scan1/interface
 ```
 
 就能看到返回的结果了, 会显示该path目录下的所有Java文件的接口。
+
+
+## 使用说明
+
+### API
+
+#### 接口地址
+
+```http request
+POST /scan/interface
+```
+
+#### 参数
+
+| 参数       | 类型     | 是否必须 | 描述          |
+|----------|--------|------|-------------|
+| path     | string | 是    | 本地文件夹路径     |
+| fileName | string | 否    | 在上述路径下的文件名字 |
+
+
+
+#### 成功响应
+```http request
+POST /scan/interface
+
+{
+    "path" : "F:\\TEST",
+    "fileName": "DeptController.java"
+}
+
+```
+
+> 说明: 当fileName不提供时, 会查询给定path路径下的所有文件(不递归文件夹); 当提供fileName时, 则只会在path路径下的基础上, 查找指定的fileName文件。
+
+**成功返回的响应如下**
+```json
+{
+	"code": 200,
+	"msg": "OK",
+	"data": [
+		"PUT /system/dept/update",
+		"GET /system/dept/list",
+		"GET /system/dept/list-all-simple",
+		"GET /system/dept/get",
+		"POST /system/dept/create",
+		"DELETE /system/dept/delete",
+		"POST /system/dept/example0"
+	],
+	"timestamp": "2023-04-20T23:33:29.868"
+}
+```
+
+
+
