@@ -1,9 +1,14 @@
 # ScanPackage
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![](https://img.shields.io/badge/version-0.0.1-brightgreen.svg)
+![](https://img.shields.io/badge/Java-8-green.svg)
+
 ScanPackage是一个可以在本地文件下**对SpringBoot项目进行扫描**的项目。目前支持对指定的本地文件目录进行扫描。
 
 ### 特点
 
-- 基于JDK8和Maven构建开发, 使用SpringBoot框架进行快速开发
+- 基于JDK8和Maven构建, 使用SpringBoot框架进行快速开发
 
 ## 快速开始
 
@@ -12,7 +17,7 @@ ScanPackage是一个可以在本地文件下**对SpringBoot项目进行扫描**�
 克隆本项目后, 使用mvn编译, 打包生成jar文件, 找到jar包生成的目录, 运行起来即可
 
 ```bash
-git clone 本项目
+git clone https://github.com/HUANYUESS/ScanPackage.git
 
 mvn compile
 
@@ -30,7 +35,7 @@ POST http://localhost:9081/scan1/interface
 }
 ```
 
-就能看到返回的结果了, 会显示该path目录下的所有Java文件的接口。
+就能看到返回的结果了, 会显示该path目录下的所有Java文件的接口
 
 
 ## 使用说明
@@ -50,6 +55,7 @@ POST /scan/interface
 | path     | string | 是    | 本地文件夹路径     |
 | fileName | string | 否    | 在上述路径下的文件名字 |
 
+> 说明: 当fileName不提供时, 会查询给定path路径下的所有文件(不递归文件夹); 当提供fileName时, 则只会在path路径下的基础上, 查找指定的fileName文件。
 
 
 #### 成功响应
@@ -62,8 +68,6 @@ POST /scan/interface
 }
 
 ```
-
-> 说明: 当fileName不提供时, 会查询给定path路径下的所有文件(不递归文件夹); 当提供fileName时, 则只会在path路径下的基础上, 查找指定的fileName文件。
 
 **成功返回的响应如下**
 ```json
@@ -83,5 +87,10 @@ POST /scan/interface
 }
 ```
 
+## 参与贡献
 
+1.  Fork 本仓库
+2.  新建 Feat_xxx 分支
+3.  提交代码
+4.  新建 Pull Request
 
