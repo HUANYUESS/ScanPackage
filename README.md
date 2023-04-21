@@ -4,7 +4,7 @@
 ![](https://img.shields.io/badge/version-0.0.1-brightgreen.svg)
 ![](https://img.shields.io/badge/Java-8-green.svg)
 
-ScanPackage是一个可以在本地文件下**对SpringBoot项目进行扫描**的项目。目前支持对指定的本地文件目录进行扫描。
+ScanPackage是一个可以在本地文件下**对SpringBoot项目进行扫描**的项目。目前支持对指定的**本地文件目录**和**GitHub文件**进行扫描。
 
 ### 特点
 
@@ -28,8 +28,9 @@ java -jar ScanPackage-0.0.1.jar
 
 项目就在9091端口运行起来了, 可以使用API工具来进行访问
 
-```bash
-POST http://localhost:9081/scan1/interface
+```http request
+POST http://localhost:9081/scan1/project
+
 {
   "path" : "F:\\TEST"
 }
@@ -45,31 +46,33 @@ POST http://localhost:9081/scan1/interface
 #### 接口地址
 
 ```http request
-POST /scan/interface
+POST /scan/project
 ```
 
 #### 参数
 
-| 参数       | 类型     | 是否必须 | 描述          |
-|----------|--------|------|-------------|
-| path     | string | 是    | 本地文件夹路径     |
-| fileName | string | 否    | 在上述路径下的文件名字 |
+| 参数       | 类型     | 是否必须 | 描述                 |
+|----------|--------|------|--------------------|
+| path     | string | 是    | 文件路径             |
+| type     | string | 是    | 文件类型(LOCAL, GITHUB) |
+| fileName | string | 否    | 在上述路径下的文件名字        |
+
 
 > 说明: 当fileName不提供时, 会查询给定path路径下的所有文件(不递归文件夹); 当提供fileName时, 则只会在path路径下的基础上, 查找指定的fileName文件。
 
 
-#### 成功响应
+#### 案例1
 ```http request
-POST /scan/interface
+POST /scan/project
 
 {
     "path" : "F:\\TEST",
-    "fileName": "DeptController.java"
+    "type": "LOCAL"
 }
-
 ```
 
 **成功返回的响应如下**
+
 ```json
 {
 	"code": 200,
@@ -81,11 +84,142 @@ POST /scan/interface
 		"GET /system/dept/get",
 		"POST /system/dept/create",
 		"DELETE /system/dept/delete",
-		"POST /system/dept/example0"
+		"POST /system/dept/example0",
+		"PUT /system/post/update",
+		"GET /system/post/get",
+		"GET /system/post/list-all-simple",
+		"GET /system/post/page",
+		"GET /system/post/export",
+		"POST /system/post/create",
+		"DELETE /system/post/delete"
 	],
-	"timestamp": "2023-04-20T23:33:29.868"
+	"timestamp": "2023-04-21T11:35:40.24"
 }
 ```
+
+
+#### 案例2
+```http request
+POST /scan/project
+
+{
+    "path" : "F:\\TEST",
+    "fileName": "DeptController.java",
+    "type": "LOCAL"
+}
+```
+
+**成功返回的响应如下**
+
+```json
+{
+  "code": 200,
+  "msg": "OK",
+  "data": [
+    "PUT /system/dept/update",
+    "GET /system/dept/list",
+    "GET /system/dept/list-all-simple",
+    "GET /system/dept/get",
+    "POST /system/dept/create",
+    "DELETE /system/dept/delete",
+    "POST /system/dept/example0"
+  ],
+  "timestamp": "2023-04-21T11:36:02.064"
+}
+```
+
+
+#### 案例3
+```http request
+POST /scan/project
+
+{
+    "path" : "https://api.github.com/repos/qiwenshare/qiwen-file/contents/src/main/java/com/qiwenshare/file/controller",
+    "type": "GITHUB"
+}
+```
+
+**成功返回的响应如下**
+
+```json
+{
+  "code": 200,
+  "msg": "OK",
+  "data": [
+    "GET /common/commonfileuser",
+    "POST /common/commonfile",
+    "GET /common/getCommonFileByUser",
+    "GET /common/commonFileList",
+    "GET /file/search",
+    "POST /file/createFile",
+    "POST /file/createFold",
+    "POST /file/renamefile",
+    "GET /file/getfilelist",
+    "POST /file/batchdeletefile",
+    "POST /file/deletefile",
+    "POST /file/unzipfile",
+    "POST /file/copyfile",
+    "POST /file/movefile",
+    "POST /file/batchmovefile",
+    "GET /file/getfiletree",
+    "POST /file/update",
+    "GET /file/detail",
+    "GET /filetransfer/preview",
+    "GET /filetransfer/uploadfile",
+    "POST /filetransfer/uploadfile",
+    "GET /filetransfer/downloadfile",
+    "GET /filetransfer/batchDownloadFile",
+    "GET /filetransfer/getstorage",
+    "GET /notice/list",
+    "GET /notice/detail",
+    "POST /recoveryfile/deleterecoveryfile",
+    "POST /recoveryfile/batchdelete",
+    "GET /recoveryfile/list",
+    "POST /recoveryfile/restorefile",
+    "GET /share/shareList",
+    "GET /share/sharefileList",
+    "GET /share/sharetype",
+    "GET /share/checkextractioncode",
+    "GET /share/checkendtime",
+    "POST /share/sharefile",
+    "POST /share/savesharefile",
+    "GET /param/grouplist",
+    "POST /user/register",
+    "GET /user/login",
+    "GET /user/checkuserlogininfo",
+    "GET /user/checkWxAuth"
+  ],
+  "timestamp": "2023-04-21T11:47:33.289"
+}
+```
+
+#### 案例4
+```http request
+POST /scan/project
+
+{
+    "path" : "https://api.github.com/repos/qiwenshare/qiwen-file/contents/src/main/java/com/qiwenshare/file/controller",
+    "type": "GITHUB",
+    "fileName": "CommonFileController.java",
+}
+```
+
+**成功返回的响应如下**
+
+```json
+{
+  "code": 200,
+  "msg": "OK",
+  "data": [
+    "GET /common/commonfileuser",
+    "POST /common/commonfile",
+    "GET /common/getCommonFileByUser",
+    "GET /common/commonFileList"
+  ],
+  "timestamp": "2023-04-21T11:47:12.836"
+}
+```
+
 
 ## 参与贡献
 
