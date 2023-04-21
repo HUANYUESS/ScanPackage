@@ -29,10 +29,11 @@ java -jar ScanPackage-0.0.1.jar
 项目就在9091端口运行起来了, 可以使用API工具来进行访问
 
 ```http request
-POST http://localhost:9081/scan1/project
+POST http://localhost:9081//scan/project
 
 {
-  "path" : "F:\\TEST"
+    "path" : "F:\\TEST",
+    "type": "LOCAL"
 }
 ```
 
