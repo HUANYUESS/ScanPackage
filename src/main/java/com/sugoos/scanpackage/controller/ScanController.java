@@ -27,5 +27,12 @@ public class ScanController {
         return scanService.findSpecifiedDirInterface(dto);
     }
 
-
+    @NotNullParams
+    @PostMapping(value = "/github")
+    public RestResult<?> findAllGithubInterface(@RequestBody ProjectPathDto dto) {
+        if (dto.getFileName() != null) {
+            return scanService.findSpecifiedGithubFileInterface(dto);
+        }
+        return scanService.findSpecifiedGithubDirInterface(dto);
+    }
 }

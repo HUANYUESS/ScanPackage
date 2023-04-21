@@ -1,8 +1,10 @@
 package com.sugoos.scanpackage.service;
 
+import com.sugoos.scanpackage.domain.GitHubFile;
 import com.sugoos.scanpackage.dto.ProjectPathDto;
 import com.sugoos.scanpackage.dto.RestResult;
 import org.apache.commons.io.FileUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
@@ -14,6 +16,13 @@ import static com.sugoos.scanpackage.utils.ScanContentUtils.*;
 
 @Service
 public class ScanService {
+
+    private final GitHubService gitHubService;
+
+    @Autowired
+    public ScanService (GitHubService gitHubService) {
+        this.gitHubService = gitHubService;
+    }
 
     public RestResult<?> findSpecifiedDirInterface(ProjectPathDto dto) {
         File dir = new File(dto.getPath());
@@ -49,4 +58,26 @@ public class ScanService {
     }
 
 
+    public RestResult<?> findSpecifiedGithubDirInterface(ProjectPathDto dto) {
+        List<GitHubFile> files = gitHubService.requestGitHubFiles(dto.getPath());
+        List<String> list = new ArrayList<>();
+        for (GitHubFile file : files) {
+            addMappingInterface2List(file, list);
+        }
+        return RestResult.ok(list);
+    }
+
+    private void addMappingInterface2List(GitHubFile file, List<String> list) {
+        String content = gitHubService.requestGitHubFileContent(file.getDownload_url());
+        List<String> rootPath = getRootPath(content);
+        if (rootPath == null) return;
+        for (String path : rootPath) {
+            list.addAll(getAllMapping(content, path));
+        }
+    }
+
+    public RestResult<?> findSpecifiedGithubFileInterface(ProjectPathDto dto) {
+
+        return null;
+    }
 }

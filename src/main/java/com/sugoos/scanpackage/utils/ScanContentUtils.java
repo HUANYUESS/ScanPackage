@@ -19,6 +19,12 @@ public class ScanContentUtils {
         interfacePatterns.put("deleteMappingGivenDefault", "@DeleteMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
         interfacePatterns.put("putMappingGivenDefault", "@PutMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
         interfacePatterns.put("patchMappingGivenDefault", "@PatchMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
+
+        interfacePatterns.put("getMappingGivenValue", "@GetMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("postMappingGivenValue", "@PostMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("deleteMappingGivenValue", "@DeleteMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("putMappingGivenValue", "@PutMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("patchMappingGivenValue", "@PatchMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
         interfacePatterns.put("requestMappingGivenValAndMethod", "@RequestMapping\\(value\\s*=\\s*\"(\\S+)\",\\s*method\\s*=\\s*RequestMethod.(\\S+)\\)");
 
     }
@@ -59,19 +65,18 @@ public class ScanContentUtils {
     }
 
     private static String getMethodName(String patternName) {
-        switch (patternName) {
-            case "getMappingGivenDefault":
-                return "GET";
-            case "postMappingGivenDefault":
-                return "POST";
-            case "deleteMappingGivenDefault":
-                return "DELETE";
-            case "putMappingGivenDefault":
-                return "PUT";
-            case "patchMappingGivenDefault":
-                return "PATCH";
-            default:
-                return "REQUEST";
+        if (patternName.contains("getMapping")) {
+            return "GET";
+        } else if (patternName.contains("postMapping")) {
+            return "POST";
+        } else if (patternName.contains("deleteMapping")) {
+            return "DELETE";
+        } else if (patternName.contains("putMapping")) {
+            return "PUT";
+        } else if (patternName.contains("patchMapping")) {
+            return "PATCH";
+        } else {
+            return "REQUEST";
         }
     }
 
