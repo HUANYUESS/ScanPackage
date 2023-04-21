@@ -1,5 +1,8 @@
 package com.sugoos.scanpackage.utils;
 
+import com.sugoos.scanpackage.dto.ProjectPathDto;
+import com.sugoos.scanpackage.strategy.FileContext;
+import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -93,6 +96,17 @@ public class ScanContentUtils {
         return "";
     }
 
-
+    public static boolean checkFileStatus(ProjectPathDto dto) {
+        if (dto.getType().equals(FileContext.LOCAL_FILE_SYSTEM)) {
+            File file = null;
+            if (dto.getFileName() != null) {
+                file = new File(getFullPath(dto.getPath(), dto.getFileName(), "\\"));
+            } else {
+                file = new File(dto.getPath());
+            }
+            return file.exists();
+        }
+        return true;
+    }
 
 }

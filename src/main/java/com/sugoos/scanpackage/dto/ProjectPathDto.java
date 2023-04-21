@@ -11,6 +11,9 @@ public class ProjectPathDto {
     @NotNullParams(msg = "路径不能为空")
     private String path;
 
+    @NotNullParams(msg = "类型不能为空")
+    private String type;
+
     private String fileName;
 
 }

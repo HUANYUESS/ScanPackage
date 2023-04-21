@@ -1,9 +1,9 @@
-package com.sugoos.scanpackage.domain;
+package com.sugoos.scanpackage.dto;
 
 import lombok.Data;
 
 @Data
-public class GitHubFile {
+public class GitHubFileDto {
 
     private String name;
     private String path;
