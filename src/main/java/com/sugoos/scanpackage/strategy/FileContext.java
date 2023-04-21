@@ -1,16 +1,17 @@
 package com.sugoos.scanpackage.strategy;
 
-import com.sugoos.scanpackage.dto.GitHubFileDto;
+import com.sugoos.scanpackage.dto.GitFileDto;
 import com.sugoos.scanpackage.dto.ProjectPathDto;
+
 import java.io.File;
 import java.util.List;
 
-import static com.sugoos.scanpackage.utils.ScanContentUtils.*;
+import static com.sugoos.scanpackage.utils.ScanContentUtils.getFullPath;
 
 public class FileContext {
 
     public final static String LOCAL_FILE_SYSTEM = "LOCAL";
-    public final static String GITHUB_FILE_SYSTEM = "GITHUB";
+    public final static String GIT_FILE_SYSTEM = "GIT";
 
     private final FileStrategy fileStrategy;
 
@@ -21,9 +22,8 @@ public class FileContext {
     public FileContext(ProjectPathDto dto) {
         if (dto.getType().equals(LOCAL_FILE_SYSTEM)) {
             this.fileStrategy = new LocalFileStrategy();
-        } else if (dto.getType().equals(GITHUB_FILE_SYSTEM)) {
-            convertGithubToAPIURL(dto);
-            this.fileStrategy = new GitHubFileStrategy();
+        } else if (dto.getType().equals(GIT_FILE_SYSTEM)) {
+            this.fileStrategy = new GitFileStrategy();
         } else {
             this.fileStrategy = null;
         }
@@ -37,8 +37,8 @@ public class FileContext {
         if (file instanceof File) {
             String path = ((File) file).getPath();
             return fileStrategy.readFile(path);
-        } else if (file instanceof GitHubFileDto) {
-            String url = ((GitHubFileDto) file).getDownload_url();
+        } else if (file instanceof GitFileDto) {
+            String url = ((GitFileDto) file).getDownload_url();
             return fileStrategy.readFile(url);
         }
         return null;
@@ -48,11 +48,11 @@ public class FileContext {
         if (dto.getType().equals(LOCAL_FILE_SYSTEM)) {
             String path = getFullPath(dto.getPath(), dto.getFileName(), "\\");
             return fileStrategy.readFile(path);
-        } else if (dto.getType().equals(GITHUB_FILE_SYSTEM)) {
+        } else if (dto.getType().equals(GIT_FILE_SYSTEM)) {
             List<?> files = fileStrategy.listFiles(dto.getPath());
             for (Object file : files) {
-                if (file instanceof GitHubFileDto && ((GitHubFileDto) file).getName().equals(dto.getFileName())) {
-                    String url = ((GitHubFileDto) file).getDownload_url();
+                if (file instanceof GitFileDto && ((GitFileDto) file).getName().equals(dto.getFileName())) {
+                    String url = ((GitFileDto) file).getDownload_url();
                     return fileStrategy.readFile(url);
                 }
             }

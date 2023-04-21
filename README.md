@@ -4,11 +4,13 @@
 ![](https://img.shields.io/badge/version-0.0.1-brightgreen.svg)
 ![](https://img.shields.io/badge/Java-8-green.svg)
 
-ScanPackage是一个可以在本地文件下**对SpringBoot项目进行扫描**的项目。目前支持对指定的**本地文件目录**和**GitHub文件**进行扫描。
+ScanPackage是一个可以在本地文件下**对SpringBoot项目进行扫描**的项目。目前支持对指定的**本地文件目录**、**GitHub文件**
+和和**Gitee文件**进行扫描。
 
 ### 特点
 
 - 基于JDK8和Maven构建, 使用SpringBoot框架进行快速开发
+- 可以在线扫描GitHub、Gitee项目的接口, 只需传入项目的路径
 
 ## 快速开始
 
@@ -52,11 +54,11 @@ POST /scan/project
 
 #### 参数
 
-| 参数       | 类型     | 是否必须 | 描述                 |
-|----------|--------|------|--------------------|
+| 参数       | 类型     | 是否必须 | 描述               |
+|----------|--------|------|------------------|
 | path     | string | 是    | 文件路径             |
-| type     | string | 是    | 文件类型(LOCAL, GITHUB) |
-| fileName | string | 否    | 在上述路径下的文件名字        |
+| type     | string | 是    | 文件类型(LOCAL, GIT) |
+| fileName | string | 否    | 在上述路径下的文件名字      |
 
 
 > 说明: 当fileName不提供时, 会查询给定path路径下的所有文件(不递归文件夹); 当提供fileName时, 则只会在path路径下的基础上, 查找指定的fileName文件。
@@ -98,7 +100,6 @@ POST /scan/project
 }
 ```
 
-
 #### 案例2
 ```http request
 POST /scan/project
@@ -129,14 +130,13 @@ POST /scan/project
 }
 ```
 
-
 #### 案例3
 ```http request
 POST /scan/project
 
 {
     "path" : "https://github.com/qiwenshare/qiwen-file/tree/master/src/main/java/com/qiwenshare/file/controller",
-    "type": "GITHUB"
+    "type": "GIT"
 }
 ```
 
@@ -200,7 +200,7 @@ POST /scan/project
 
 {
     "path" : "https://github.com/qiwenshare/qiwen-file/tree/master/src/main/java/com/qiwenshare/file/controller",
-    "type": "GITHUB",
+    "type": "GIT",
     "fileName": "CommonFileController.java",
 }
 ```
@@ -221,11 +221,74 @@ POST /scan/project
 }
 ```
 
+#### 案例5
+
+```http request
+POST /scan/project
+
+{
+    "path" : "https://gitee.com/huanyuess/qiwen-file/tree/master/src/main/java/com/qiwenshare/file/controller",
+    "type": "GIT"
+}
+```
+
+**成功返回的响应如下**
+
+```json
+{
+  "code": 200,
+  "msg": "OK",
+  "data": [
+    "GET /common/commonfileuser",
+    "POST /common/commonfile",
+    "GET /common/getCommonFileByUser",
+    "GET /common/commonFileList",
+    "GET /file/search",
+    "POST /file/createfile",
+    "POST /file/renamefile",
+    "GET /file/getfilelist",
+    "POST /file/batchdeletefile",
+    "POST /file/deletefile",
+    "POST /file/unzipfile",
+    "POST /file/copyfile",
+    "POST /file/movefile",
+    "POST /file/batchmovefile",
+    "GET /file/selectfilebyfiletype",
+    "GET /file/getfiletree",
+    "POST /file/update",
+    "GET /file/detail",
+    "GET /filetransfer/preview",
+    "GET /filetransfer/uploadfile",
+    "POST /filetransfer/uploadfile",
+    "GET /filetransfer/downloadfile",
+    "GET /filetransfer/batchDownloadFile",
+    "GET /filetransfer/getstorage",
+    "GET /notice/list",
+    "GET /notice/detail",
+    "POST /recoveryfile/deleterecoveryfile",
+    "POST /recoveryfile/batchdelete",
+    "POST /recoveryfile/list",
+    "POST /recoveryfile/restorefile",
+    "GET /share/shareList",
+    "GET /share/sharefileList",
+    "GET /share/sharetype",
+    "GET /share/checkextractioncode",
+    "GET /share/checkendtime",
+    "POST /share/sharefile",
+    "POST /share/savesharefile",
+    "GET /param/grouplist",
+    "POST /user/register",
+    "GET /user/login",
+    "GET /user/checkuserlogininfo"
+  ],
+  "timestamp": "2023-04-21T15:38:56.045"
+}
+```
 
 ## 参与贡献
 
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
+1. Fork 本仓库
+2. 新建 Feat_xxx 分支
+3. 提交代码
+4. 新建 Pull Request
 

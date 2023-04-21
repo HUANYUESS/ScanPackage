@@ -2,42 +2,22 @@ package com.sugoos.scanpackage.utils;
 
 import com.sugoos.scanpackage.dto.ProjectPathDto;
 import com.sugoos.scanpackage.strategy.FileContext;
+
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 public class ScanContentUtils {
 
     private static final Map<String, String> rootPathPatterns = new HashMap<>();
     private static final Map<String, String> interfacePatterns = new HashMap<>();
 
-    private static final Map<String, String> githubPathPatterns = new HashMap<>();
-
-
-
-    static {
-        rootPathPatterns.put("patternGivenDefault", "@RequestMapping\\s*\\(\\s*\"\\s*([^\"\\s]*)\\s*\"\\s*\\)[\\s\\S]*?public\\s+class\\s+");
-        rootPathPatterns.put("patternGivenValue", "@RequestMapping\\s*\\(\\s*value\\s*=\\s*\"\\s*([^\"\\s]*)\\s*\"\\s*\\)[\\s\\S]*?public\\s+class\\s+");
-        rootPathPatterns.put("patternGivenPath", "@RequestMapping\\s*\\(\\s*path\\s*=\\s*\"\\s*([^\"\\s]*)\\s*\"\\s*\\)[\\s\\S]*?public\\s+class\\s+");
-        rootPathPatterns.put("patternGivenValueList", "@RequestMapping\\s*\\(\\s*value\\s*=\\s*\\{\\s*(\"\\s*[^\"\\s]*\\s*\"\\s*(,\\s*\"\\s*[^\"\\s]*\\s*\")*)?\\s*\\}\\s*\\)[\\s\\S]*?public\\s+class\\s+");
-
-        interfacePatterns.put("getMappingGivenDefault", "@GetMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
-        interfacePatterns.put("postMappingGivenDefault", "@PostMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
-        interfacePatterns.put("deleteMappingGivenDefault", "@DeleteMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
-        interfacePatterns.put("putMappingGivenDefault", "@PutMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
-        interfacePatterns.put("patchMappingGivenDefault", "@PatchMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
-
-        interfacePatterns.put("getMappingGivenValue", "@GetMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
-        interfacePatterns.put("postMappingGivenValue", "@PostMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
-        interfacePatterns.put("deleteMappingGivenValue", "@DeleteMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
-        interfacePatterns.put("putMappingGivenValue", "@PutMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
-        interfacePatterns.put("patchMappingGivenValue", "@PatchMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
-        interfacePatterns.put("requestMappingGivenValAndMethod", "@RequestMapping\\(value\\s*=\\s*\"(\\S+)\",\\s*method\\s*=\\s*RequestMethod.(\\S+)\\)");
-
-        githubPathPatterns.put("defaultMapping", "https://github.com/(\\w+[-\\w]*)/(\\w+[-\\w]*)/tree/\\w+[-\\w]/(.*)");
-        githubPathPatterns.put("apiMapping", "https://api.github.com/repos/(\\w+[-\\w])*/(\\w+[-\\w])*/contents/(.*)");
-
-    }
+    private static final Map<String, String> gitPathPatterns = new HashMap<>();
+    private static final String GITEE_API_URL_TEMPLATE = "https://gitee.com/api/v5/repos/%s/%s/contents/%s";
 
 
     public static List<String> getRootPath(String content) {
@@ -118,22 +98,53 @@ public class ScanContentUtils {
 
     private static final String GITHUB_API_URL_TEMPLATE = "https://api.github.com/repos/%s/%s/contents/%s";
 
-    public static String getGithubAPIPath(String url) {
+    static {
+        rootPathPatterns.put("patternGivenDefault", "@RequestMapping\\s*\\(\\s*\"\\s*([^\"\\s]*)\\s*\"\\s*\\)[\\s\\S]*?public\\s+class\\s+");
+        rootPathPatterns.put("patternGivenValue", "@RequestMapping\\s*\\(\\s*value\\s*=\\s*\"\\s*([^\"\\s]*)\\s*\"\\s*\\)[\\s\\S]*?public\\s+class\\s+");
+        rootPathPatterns.put("patternGivenPath", "@RequestMapping\\s*\\(\\s*path\\s*=\\s*\"\\s*([^\"\\s]*)\\s*\"\\s*\\)[\\s\\S]*?public\\s+class\\s+");
+        rootPathPatterns.put("patternGivenValueList", "@RequestMapping\\s*\\(\\s*value\\s*=\\s*\\{\\s*(\"\\s*[^\"\\s]*\\s*\"\\s*(,\\s*\"\\s*[^\"\\s]*\\s*\")*)?\\s*\\}\\s*\\)[\\s\\S]*?public\\s+class\\s+");
+
+        interfacePatterns.put("getMappingGivenDefault", "@GetMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("postMappingGivenDefault", "@PostMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("deleteMappingGivenDefault", "@DeleteMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("putMappingGivenDefault", "@PutMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("patchMappingGivenDefault", "@PatchMapping\\s*\\(\\s*\"(\\S+)\"\\s*\\)");
+
+        interfacePatterns.put("getMappingGivenValue", "@GetMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("postMappingGivenValue", "@PostMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("deleteMappingGivenValue", "@DeleteMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("putMappingGivenValue", "@PutMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("patchMappingGivenValue", "@PatchMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
+        interfacePatterns.put("requestMappingGivenValAndMethod", "@RequestMapping\\(value\\s*=\\s*\"(\\S+)\",\\s*method\\s*=\\s*RequestMethod.(\\S+)\\)");
+
+        gitPathPatterns.put("GitHubMapping", "https://github.com/(\\w+[-\\w]*)/(\\w+[-\\w]*)/tree/\\w+[-\\w]/(.*)");
+        gitPathPatterns.put("GitHubApiMapping", "https://api.github.com/repos/(\\w+[-\\w]*)/(\\w+[-\\w]*)/contents/(.*)");
+        gitPathPatterns.put("GiteeMapping", "https://gitee.com/(\\w+[-\\w]*)/(\\w+[-\\w]*)/tree/\\w+[-\\w]*/(.*)");
+        gitPathPatterns.put("GiteeApiMapping", "https://gitee.com/api/v5/repos/(\\w+[-\\w]*)/(\\w+[-\\w]*)/contents/(.*)");
+
+    }
+
+    public static String getGitAPIPath(String url) {
         Matcher matcher = null;
-        for (String patternName : githubPathPatterns.keySet()) {
-            String pattern = githubPathPatterns.get(patternName);
+        for (String patternName : gitPathPatterns.keySet()) {
+            String pattern = gitPathPatterns.get(patternName);
             matcher = Pattern.compile(pattern).matcher(url);
             if (matcher.matches()) {
                 String owner = matcher.group(1);
                 String repo = matcher.group(2);
                 String path = matcher.group(3);
-                return String.format(GITHUB_API_URL_TEMPLATE, owner, repo, path);
+                if (url.contains("gitee")) {
+                    return String.format(GITEE_API_URL_TEMPLATE, owner, repo, path);
+                } else if (url.contains("github")) {
+                    return String.format(GITHUB_API_URL_TEMPLATE, owner, repo, path);
+                }
             }
         }
         return null;
     }
 
-    public static void convertGithubToAPIURL(ProjectPathDto dto) {
-        dto.setPath(getGithubAPIPath(dto.getPath()));
+
+    public static String convertGitToAPIURL(String url) {
+        return getGitAPIPath(url);
     }
 }

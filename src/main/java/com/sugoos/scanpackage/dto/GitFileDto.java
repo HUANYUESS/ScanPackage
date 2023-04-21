@@ -3,7 +3,7 @@ package com.sugoos.scanpackage.dto;
 import lombok.Data;
 
 @Data
-public class GitHubFileDto {
+public class GitFileDto {
 
     private String name;
     private String path;
