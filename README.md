@@ -135,7 +135,7 @@ POST /scan/project
 POST /scan/project
 
 {
-    "path" : "https://api.github.com/repos/qiwenshare/qiwen-file/contents/src/main/java/com/qiwenshare/file/controller",
+    "path" : "https://github.com/qiwenshare/qiwen-file/tree/master/src/main/java/com/qiwenshare/file/controller",
     "type": "GITHUB"
 }
 ```
@@ -190,7 +190,7 @@ POST /scan/project
     "GET /user/checkuserlogininfo",
     "GET /user/checkWxAuth"
   ],
-  "timestamp": "2023-04-21T11:47:33.289"
+  "timestamp": "2023-04-21T14:16:38.447"
 }
 ```
 
@@ -199,7 +199,7 @@ POST /scan/project
 POST /scan/project
 
 {
-    "path" : "https://api.github.com/repos/qiwenshare/qiwen-file/contents/src/main/java/com/qiwenshare/file/controller",
+    "path" : "https://github.com/qiwenshare/qiwen-file/tree/master/src/main/java/com/qiwenshare/file/controller",
     "type": "GITHUB",
     "fileName": "CommonFileController.java",
 }
@@ -217,7 +217,7 @@ POST /scan/project
     "GET /common/getCommonFileByUser",
     "GET /common/commonFileList"
   ],
-  "timestamp": "2023-04-21T11:47:12.836"
+  "timestamp": "2023-04-21T14:17:21.638"
 }
 ```
 
