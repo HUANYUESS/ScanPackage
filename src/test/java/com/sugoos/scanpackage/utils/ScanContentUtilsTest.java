@@ -67,4 +67,20 @@ class ScanContentUtilsTest {
         Assert.hasText(allMapping.toString(), "[POST /system/dept/create, POST /system/dept/example0]");
     }
 
+
+    @Test
+    void testGetGithubAPIPathGivenDefault() {
+        String content = "https://github.com/qiwenshare/qiwen-file/tree/master/src/main/java/com/qiwenshare/file/controller";
+        String mapping = getGithubAPIPath(content);
+        Assert.hasText(mapping, "https://api.github.com/repos/qiwenshare/qiwen-file/contents/src/main/java/com/qiwenshare/file/controller");
+    }
+
+    @Test
+    void testGetGithubAPIPathGivenAPI() {
+        String content = "https://api.github.com/repos/qiwenshare/qiwen-file/contents/src/main/java/com/qiwenshare/file/controller";
+        String mapping = getGithubAPIPath(content);
+        Assert.hasText(mapping, "https://api.github.com/repos/qiwenshare/qiwen-file/contents/src/main/java/com/qiwenshare/file/controller");
+    }
+
+
 }

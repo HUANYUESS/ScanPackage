@@ -11,6 +11,10 @@ public class ScanContentUtils {
     private static final Map<String, String> rootPathPatterns = new HashMap<>();
     private static final Map<String, String> interfacePatterns = new HashMap<>();
 
+    private static final Map<String, String> githubPathPatterns = new HashMap<>();
+
+
+
     static {
         rootPathPatterns.put("patternGivenDefault", "@RequestMapping\\s*\\(\\s*\"\\s*([^\"\\s]*)\\s*\"\\s*\\)[\\s\\S]*?public\\s+class\\s+");
         rootPathPatterns.put("patternGivenValue", "@RequestMapping\\s*\\(\\s*value\\s*=\\s*\"\\s*([^\"\\s]*)\\s*\"\\s*\\)[\\s\\S]*?public\\s+class\\s+");
@@ -29,6 +33,9 @@ public class ScanContentUtils {
         interfacePatterns.put("putMappingGivenValue", "@PutMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
         interfacePatterns.put("patchMappingGivenValue", "@PatchMapping\\s*\\(\\s*value\\s*=\\s*\"(\\S+)\"\\s*\\)");
         interfacePatterns.put("requestMappingGivenValAndMethod", "@RequestMapping\\(value\\s*=\\s*\"(\\S+)\",\\s*method\\s*=\\s*RequestMethod.(\\S+)\\)");
+
+        githubPathPatterns.put("defaultMapping", "https://github.com/(\\w+[-\\w]*)/(\\w+[-\\w]*)/tree/\\w+[-\\w]/(.*)");
+        githubPathPatterns.put("apiMapping", "https://api.github.com/repos/(\\w+[-\\w])*/(\\w+[-\\w])*/contents/(.*)");
 
     }
 
@@ -109,4 +116,24 @@ public class ScanContentUtils {
         return true;
     }
 
+    private static final String GITHUB_API_URL_TEMPLATE = "https://api.github.com/repos/%s/%s/contents/%s";
+
+    public static String getGithubAPIPath(String url) {
+        Matcher matcher = null;
+        for (String patternName : githubPathPatterns.keySet()) {
+            String pattern = githubPathPatterns.get(patternName);
+            matcher = Pattern.compile(pattern).matcher(url);
+            if (matcher.matches()) {
+                String owner = matcher.group(1);
+                String repo = matcher.group(2);
+                String path = matcher.group(3);
+                return String.format(GITHUB_API_URL_TEMPLATE, owner, repo, path);
+            }
+        }
+        return null;
+    }
+
+    public static void convertGithubToAPIURL(ProjectPathDto dto) {
+        dto.setPath(getGithubAPIPath(dto.getPath()));
+    }
 }

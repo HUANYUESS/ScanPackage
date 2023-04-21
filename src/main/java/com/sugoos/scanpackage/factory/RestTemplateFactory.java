@@ -1,4 +1,4 @@
-package com.sugoos.scanpackage.config;
+package com.sugoos.scanpackage.factory;
 
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;

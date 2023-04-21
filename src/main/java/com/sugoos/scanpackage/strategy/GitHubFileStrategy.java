@@ -1,7 +1,7 @@
 package com.sugoos.scanpackage.strategy;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sugoos.scanpackage.config.RestTemplateFactory;
+import com.sugoos.scanpackage.factory.RestTemplateFactory;
 import com.sugoos.scanpackage.dto.GitHubFileDto;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;

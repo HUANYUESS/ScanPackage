@@ -4,7 +4,8 @@ import com.sugoos.scanpackage.dto.GitHubFileDto;
 import com.sugoos.scanpackage.dto.ProjectPathDto;
 import java.io.File;
 import java.util.List;
-import static com.sugoos.scanpackage.utils.ScanContentUtils.getFullPath;
+
+import static com.sugoos.scanpackage.utils.ScanContentUtils.*;
 
 public class FileContext {
 
@@ -21,6 +22,7 @@ public class FileContext {
         if (dto.getType().equals(LOCAL_FILE_SYSTEM)) {
             this.fileStrategy = new LocalFileStrategy();
         } else if (dto.getType().equals(GITHUB_FILE_SYSTEM)) {
+            convertGithubToAPIURL(dto);
             this.fileStrategy = new GitHubFileStrategy();
         } else {
             this.fileStrategy = null;
