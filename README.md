@@ -54,16 +54,16 @@ POST /scan/project
 
 #### 参数
 
-| 参数        | 类型     | 是否必须 | 描述               |
-|-----------|--------|------|------------------|
-| path      | string | 是    | 文件路径             |
-| type      | string | 是    | 文件类型(LOCAL, GIT) |
-| fileName  | string | 否    | 在上述路径下的文件名字      |
-| recursive | string | 否    | 是否迭代子目录          |
+| 参数        | 类型      | 是否必须 | 描述               |
+|-----------|---------|------|------------------|
+| path      | string  | 是    | 文件路径             |
+| type      | string  | 是    | 文件类型(LOCAL, GIT) |
+| fileName  | string  | 否    | 在上述路径下的文件名字      |
+| recursive | boolean | 否    | 是否迭代子目录          |
 
 > 说明:
 > 当fileName不提供时, 会查询给定path路径下的所有文件; 当提供fileName时, 则只会在path路径下的基础上, 查找指定的fileName文件。
-> recursive默认值是false, 默认不会迭代查询, 当使用GIT进行迭代查询时, 将很可能出现403 API REQUEST请求受限问题,
+> recursive默认值是false, 默认不会迭代查询, 当使用GIT进行迭代查询时, 将很可能出现403 API REQUEST请求受限问题
 > 尽量下载到本地之后在本地查询
 
 #### 案例1
