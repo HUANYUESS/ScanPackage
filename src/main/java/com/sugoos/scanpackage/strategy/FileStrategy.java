@@ -4,7 +4,9 @@ import java.util.List;
 
 public interface FileStrategy {
 
-    List<?> listFiles(String param);
+    List<?> listTopLevelFiles(String param);
+
+    List<?> listRecursiveFiles(String param);
 
     String readFile(String file);
 

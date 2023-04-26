@@ -29,8 +29,12 @@ public class FileContext {
         }
     }
 
-    public List<?> listFiles(String param) {
-        return fileStrategy.listFiles(param);
+    public List<?> listFiles(ProjectPathDto dto) {
+        if (dto.isRecursive()) {
+            return fileStrategy.listRecursiveFiles(dto.getPath());
+        } else {
+            return fileStrategy.listTopLevelFiles(dto.getPath());
+        }
     }
 
     public String readFile(Object file) {
@@ -49,7 +53,7 @@ public class FileContext {
             String path = getFullPath(dto.getPath(), dto.getFileName(), "\\");
             return fileStrategy.readFile(path);
         } else if (dto.getType().equals(GIT_FILE_SYSTEM)) {
-            List<?> files = fileStrategy.listFiles(dto.getPath());
+            List<?> files = fileStrategy.listTopLevelFiles(dto.getPath());
             for (Object file : files) {
                 if (file instanceof GitFileDto && ((GitFileDto) file).getName().equals(dto.getFileName())) {
                     String url = ((GitFileDto) file).getDownload_url();
